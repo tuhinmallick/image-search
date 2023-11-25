@@ -86,7 +86,7 @@ class TypingAssistant():
         predictions = {}
         if len(query_terms) >= 2:
             predictions = self.__lexicon.predict_from_trigrams(query_terms[-2], query_terms[-1])
-        if len(query_terms) >= 1 and len(predictions) == 0:
+        if query_terms and len(predictions) == 0:
             predictions = self.__lexicon.predict_from_bigrams(query_terms[-1])
 
         suggestions = []

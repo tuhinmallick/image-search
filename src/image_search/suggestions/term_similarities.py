@@ -36,15 +36,15 @@ class SequenceSimilarity():
         for term in terms:
             self.__sequence_matcher.set_seq1(term[: term_cutoff])
             if self.__sequence_matcher.real_quick_ratio() >= self.__sequence_similarity_cutoff and \
-                self.__sequence_matcher.quick_ratio() >= self.__sequence_similarity_cutoff and \
-                    self.__sequence_matcher.ratio() >= self.__sequence_similarity_cutoff:
+                    self.__sequence_matcher.quick_ratio() >= self.__sequence_similarity_cutoff and \
+                        self.__sequence_matcher.ratio() >= self.__sequence_similarity_cutoff:
                 similar_terms[term] = self.__sequence_matcher.ratio()
         most_similar_terms = sorted(
             similar_terms.items(),
             key=lambda x: x[1],
             reverse=True,
         )[: self.__max_sequence_similarities]
-        return {term: ratio for term, ratio in most_similar_terms}
+        return dict(most_similar_terms)
 
     def retrieve_similar_terms(
         self,
@@ -72,20 +72,22 @@ class SemanticSimilarity():
         self.__semantic_model: ft.FastText = ft.load_model(SemanticSimilarity.SEMANTIC_MODEL_PATH)
 
     def get_nearest_neighbors(self, reference_term: str, stop_terms: Set[str]):
-        similar_terms = {}
-        for confidence, neighbor in self.__semantic_model.get_nearest_neighbors(
-            reference_term,
-            k=10,
-        ):
-            if confidence >= self.__semantic_similarity_cutoff and \
-               neighbor != '</s>' and neighbor not in stop_terms:
-                similar_terms[neighbor] = confidence
+        similar_terms = {
+            neighbor: confidence
+            for confidence, neighbor in self.__semantic_model.get_nearest_neighbors(
+                reference_term,
+                k=10,
+            )
+            if confidence >= self.__semantic_similarity_cutoff
+            and neighbor != '</s>'
+            and neighbor not in stop_terms
+        }
         most_similar_terms = sorted(
             similar_terms.items(),
             key=lambda x: x[1],
             reverse=True,
         )[: self.__max_semantic_similarities]
-        return {term: ratio for term, ratio in most_similar_terms}
+        return dict(most_similar_terms)
 
     def retrieve_similar_terms(self, terms: List[str], stop_terms: Set[str]) -> Dict[str, float]:
         semantic_similar_terms: Dict[str, float] = {}

@@ -116,7 +116,7 @@ class CLIApp():
             print(prefix + str(suggestions['term_correction']['correct_term']) + suffix)
         elif bool(suggestions['term_prediction']):
             prefix = self.__term.move(0, query_length + 9 + 1) + self.__term.dim
-            suffix = self.__term.normal + '"'
+            suffix = f'{self.__term.normal}"'
             print(prefix + suggestions['term_prediction']['next_term'] + suffix)
         elif bool(suggestions['term_completion']):
             prefix = self.__term.move(1, query_length - len(last_term) + 9) + self.__term.dim
