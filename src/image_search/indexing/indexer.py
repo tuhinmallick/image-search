@@ -30,8 +30,10 @@ class InvertedIndex:
     @staticmethod
     def __index_document(doc_id: int, document: Document):
         term_frequencies: Dict[str, int] = Counter(document.tokens)
-        partial_term_postings = [(term, [Posting(doc_id, freq)]) for term, freq in term_frequencies.items()]
-        return partial_term_postings
+        return [
+            (term, [Posting(doc_id, freq)])
+            for term, freq in term_frequencies.items()
+        ]
 
     def __init__(self, collection: Collection):
         self.__collection: Collection = collection

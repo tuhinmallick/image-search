@@ -23,7 +23,7 @@ class ImagesHandler:
             async with session.get(url=url) as response:
                 return await response.read()
         except Exception as e:
-            print('Unable to get url {} due to {}.'.format(url, e.__class__))
+            print(f'Unable to get url {url} due to {e.__class__}.')
             return None
 
     @staticmethod
